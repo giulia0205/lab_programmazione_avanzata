@@ -1,0 +1,225 @@
+1. Equazione di secondo grado: FATTO
+2. Bisezione: FATTO 
+3. Bisezione con i puntatori: FATTO
+
+        no define, ma puntatori funzione
+        input output dei parametri
+
+        ARGOMENTI DA PASSARE: QUALE FUNZIONE UTILIZZARE E I PARAMETRI DELLA FUNZIONE SCELTA
+
+        prende gli argomenit da linee di comando e integra a scelta una di 3 equazioni 
+        equazione da aggiungere x^3+x+1=0
+        double(*myfunc)(double, double, double)     nel main!
+        if (!stamp(argv[1],"TEST"))
+            (*myfunc)=&parab;
+
+
+
+        void (*myfunct)()
+        void f1()
+        void f2()
+
+        i parametri non devono essere dati separatamente ma direttamente dal comando
+
+4. Fattoriale: FATTO
+5. Pi greco: FATTO
+6. Circonferenze: FATTO -------  cancellare le cose superflue prima di inviare
+        
+        PER PLOTTARE:
+                gnuplot> set terminal pngcairo size 800,600
+                        Terminal type is now 'pngcairo'
+                        Options are ' background "#ffffff" enhanced fontscale 1.0 size 800, 600 '
+                gnuplot> set output "circonferenze1.png"
+                gnuplot> set xrange [-6:6]
+                gnuplot> set yrange [-6:6]
+                gnuplot> plot "circonferenze00002_3.00000.txt" using 1:2 with points pt 7
+                gnuplot> set output
+
+7. Sfere: FATTO
+
+        Stesso eseercizio delle circonferenze, ma in 3D
+        PER PLOTTARE:
+                gnuplot> set terminal pngcairo size 800,600
+                        Terminal type is now 'pngcairo'
+                        Options are ' background "#ffffff" enhanced fontscale 1.0 size 800, 600 '
+                gnuplot> set output "sfere1.png"
+                gnuplot> set xrange [-6:6]
+                gnuplot> set yrange [-6:6]
+                gnuplot> set zrange [-6:6]
+                gnuplot> splot "sfere00002_3.00000.txt" using 1:2:3 with points pt 7
+                gnuplot> set output        
+
+8. Bisezione con funzione con numero variabile di argomenti: FATTO ------ forse non ho fatto come voleva il prof
+
+        nuova modifica per la bisezione: usare funzione che accetta un numero variabile di argomenti, togliere define e mettere if su arg 
+        float *xj
+        N=atoi(argv[1]);
+        x=
+
+9. Indici casuali --------- FATTO
+
+        a. Creare x e y vettori sparsi di 10 000 elementi;
+        b. prendere da linea di comando N il numero di indici; 
+        c. generare N indici casuali da 0 a 99999 e riempirli nella loro variabile x con 1; 
+        d. generare N indici casuali da 0 a 99999 e riempirli nella loro variabile y con 1;
+        e. creare vettore z come x e y, e ci mettiamo la somma di x e y che quindi andrà da 0 a 2;
+        f. dire quanti elementi di z sono diversi da 1;
+        g. alla fine usa funzione ricorsiva per deallocare il tutto.
+        Qual è il minimo M per avere almeno un elemento diverso da 0? FRA 50 E 100
+        COMPILAZIONE:  ./indici_causali.x 100
+
+9. Star Formation --------- FATTO
+
+        Spiegazione nel notebook lecture 9:
+                1. Write a midpoint integrator and apply it to solving the following ODE: d rho_star/ dt = c_star * rho_gas/t_gas --- This is the simplest possible star formation law.
+                        rho_star: stellar density
+                        c_star: star formation efficiency ---- c_star=0.02
+                        rho_gas: gas density (constant) ------ rho_gas= 10 M_sun/kpc^3 ---- keeping rho_gas constant physically means that the gas is replenished while it form stars!
+                        t_gas: time consumption of gas ------- t_gas=1.5 Gyr
+                 Integrate if for 2*t_gas and write output each 1/5t_gas. 
+                        How do you chose the integration interval h? How do the accuracy of solution and the computing time vary with h?
+                                - Small h: accurate and slow solution;
+                                - Big h: less accurate and quick solution.
+                 This equation is analitically integrable and its solution is: rho_star= rho_star_0 + c_star*(rho_gas/t_gas)*(t-t_0) ---- coundary conditions: t_0=0, rho_star_0=0
+                 You can use it to test your integration. 
+                        How the accuracy depend on h? Why?
+                                The solution is exact for every value of h, as d rho_star/ dt = cost.
+                2. What would change if the law were  d rho_star/ dt = c_star * (rho_gas/t_gas)*t ?
+                        What is the impact of the size of h, now?
+                                Now, the error scales as h^2.
+                3. If we do not suppose the gas to be replenished, a second, couple ODE for the gas is simply: d rho_gas / dt = - d rho_star / dt
+                 Modify your code to integrate these two equations togheter (coupled system).
+                        What is changing now?
+
+10. Dark Energy -------- FATTO, non so quanti plot voglia
+        
+        Spiegazione nel notebook lecture 9
+        Integrate the evolution of the cosmological scale factor a(t).
+        Let's remember that, given a cosmological model, the evolution of the scale factor is given by the Friedmann-Lemaitre-Robertson-Walker equations.
+        Generalizing the equation for a Dark Energy component: ((da/dt)*(1/a))^2 = H_0^2 * ((1+z)^3 * Omega_m + (1+z)^2 * Omega_k + (1+z)^(3*(1+w)) * Omega_DE)
+                z is the cosmological redshift defined by: 1+z = a_0/a, where a_0=1 when z=0;   
+                Omega_k = 1 - Omega_m - Omega_DE
+                Omega_m and Omega_DE are the matter and Dark Energy density parameters at z=0.
+                H_0 is the Hubble constant at z=0 (use 70 km/s/Mpc; note that this determines the UdM of the equation);
+                w gives the equation of state of the Dark Energy, p = w*rho: w=-1 for a LambdaCDM cosmological model.
+        Your code should accept all parameters from the command line.
+        To integrate a(t), use both your midpoint code, and the above adaptive-timestep routine. 
+        Try a number of different cosmological model; integrate a(t) between t=0 and t=14 Gyr. 
+        Use both codes and try to guess the difference in accuracy/computing time.
+        Make plots.
+        COMPILAZIONE ED ESECUZIONE:
+                gcc DE.c rkqs.c rkck.c odeint.c rk4.c nrutil.c -lm
+                ./a.out 0.3 0.7 -1 PUNTO_MEDIO
+                ./a.out 0.3 0.7 -1 PASSO_ADATTIVO
+        PLOT:
+                gnuplot> set output "DE_03_07_-1_pm.png"
+                gnuplot> plot "a_puntomedio.dat" using 1:2    
+
+
+11. Equazione di Diffusione ------- FATTO, controllare la cosa di dt
+
+        Spiegazione nel notebook lecture 9:
+                Try to solve the diffusion equation: du/dt=K*Nabla^2(u)      K: coefficiente di diffusione
+                Use a grid of 100 equispaced point in [0,1);
+                as initial condition, set to 1 values of u in the central 10 point and to 0 everywhere else. 
+                Note that, dimensionally, K is the square of a length divided by a time. You can use cm^2 s^-1. Try various values and look at the differences.
+                Note that, being second order in space, you will need also boundary conditions for the fluxes. 
+                Use "wall" boundary conditions, thus F(0)=F(1)=0 (no fluxes outside the interval; note that the first point of the grid will be x_0=Delta_x / 2).
+                A different boundary could be a periodic boundary condition (how would you write it?)
+
+12. Circonferenze 2.0 ----- FATTO, controllare i grafici
+
+        Rielaborare lo script delle circonferenze in modo che anche il raggio sia un numero casuale con distribuzione uniforme.
+
+13. Sfere 2.0 ------ FATTO, controllare i grafici
+
+        Rielaborare lo script delle sfere in modo che anche il raggio sia un numero casuale con distribuzione uniforme.
+
+14. PROGETTO PRIMO MODULO: Orbite pianeti -------------------------- FATTO
+    INTEGRAZIONE DI EULERO: molto instabile, servono tanti Delta_t
+
+        Vogliamo mettere in orbita N pianeti attorno ad una stella di massa M a distanza r_i in unità astronomiche, supponendo ellitticità nulla.
+                Si scriva un codice che calcoli posizione, velocita' ed accelerazione a diversi tempi evolutivi per il Sistema Solare Interno 
+                a=GMs/r1^2
+                Vogliamo la velocità orbitale del pianeta; la scomponiamo in componenti x e y:
+                        v=v_0 + a*Delta_t
+                        p=r+ v*Delta_t
+                L'integrazione per la prima versione dell'esercizio saraì semplicemente Eulero:
+                        x =x_0+ v_x Delta_t                 y =y_0+ v_y Delta_t   
+                        v_x = vx_0 + a_x Delta_t            v_y = vy_0 + a_y Delta_t
+                Condizioni iniziali:
+                        stella sta in (0,0)
+                        y1=0, x1=-r1, quindi la velocità iniziale sarà tutta lungo y
+                        v=sqrt((G*Ms)/r_i)
+        INPUT:
+                Quantità da passare da terminale: Ms, Np, r1....rn, Delta_t
+        OUTPUT:
+                E' richiesta una strutturazione adeguata (files, Makefile, funzioni omologhe in ogni file, variabili globali, codice ben strutturato, allocazione dinamica della memoria, etc)
+                -per ciascun pianeta un file binario (usando fwrite) contenente t, x, y, v_x, v_y, a_x, a_y per ogni Delta_t      
+                                                                                ---- t tempo dall'inizio della simulazione in anni, x,y in AU, vx, vy, ax, ay in MKS.
+                -file orbitbin2txt: convertitore binario-ascii che traduce i files binari in files di testo:
+                prende come argomento il numero di intervalli da plottare (N*Delta_t)
+                                                        -------- nel fine di testo non tutti i Delta_t,in modo da ottenere un grafico ragionevole delle orbite.
+        PLOT:
+                Si produca un grafico che tracci le posizioni dei pianeti per un'orbita del pianeta piu' esterno.
+                L'orbita del pianeta piu' esterno deve essere stabile per almeno una intera rivoluzione. 
+                Plot delle traiettorie dei pianeti:
+                gnuplot
+                plot "myP.txt" u 1:2 w d
+        ATTENZIONE ALLE UNITA DI MISURA: 
+                stabilire bene le unità di misura  (unità astronomiche): 
+                - calcoli :[kg/M_sun], [(m/s)/v_earth], [(m/s^2)/a_earth]
+                - risultati: mks                                              ----- attenzione a G che quindi cambia
+                il codice dovrebbe lavorare in unita' interne, ovvero MKS riscalato (normalizzato) a valori appropriati:
+                UdL = metri/AU                                                ------tali valori sono riportati nel file params.txt (scritto in ascii, non posizionale, e unico per il sistema)
+                UdM = kg/MassaSolare
+                UdT = s/86400      
+        tip:
+                struct GeneralData {
+                double Mnorm, Lnorm, Tnorm;
+                int Np:
+                double r1, r2, ..., rN;
+                } all;
+        INFINE: generalizzare il problema sopra per il sistema TRAPPIST-1 (i 5 pianeti piu' interni)
+
+15. PRIMO PROGETTO SECONDO MODULO: Particle Mesh ------------ FATTO
+
+        Collasso sferico in una dimensione
+        Spiegazione nel notebook lecture 13 + vedi ppt Borgani
+        Codice esterno per le condizioni iniziali (usare metodo di Montecarlo), con definizione della struttura input output
+        SCHEMA DEL CODICE:
+                a. inizializzazione del codice: lettura file paramentri, allocazione delle variabili, lettura condizioni iniziali;
+                b. calcolo della densità dalla distribuzione di particelle;
+                c. calcolo della trasformata di Fourier della densità;
+                d. calcolo del potenziale nello spazio di Fourier;
+                e. tornare nello spazio delle configurazioni;
+                f. calcolo della forza;
+                g. interpolazione della forza sulle particelle;
+                h. calcolo di Delta_t;
+                i. update delle velocità e delle posizioni usando Leap Frog;
+                l. vedere se il tempo è finito: se si --- stop; altrimenti ---- tornre a passo b.
+        COMMENTI DEL PROF:
+                -funzioni piccole e specifiche
+                -no pezzi di codice replicati
+                -vari file, ciascuno contenente funzioni parenti fra loro: ------ usare makefile per la compilazione
+                        -inizializzazione del codice;
+                        -calcolo della densità;
+                        -main: non fa niente, ma mette insieme tutto;
+                        -main.h;
+                        -proto.h: prototipi delle funzioni;
+                        ...
+                -schema di programmazione top-down: iniziare dal main, scrivere ordine delle funzioni, poi scrivere le funzioni.
+                -check pointing
+        LAVORO IN CORSO:
+                iniziare con parameter file e condizioni iniziali
+
+        COMPILAZIONE:
+                1. make SCHEME=NGP
+                2. ./condizioni_iniziali TESTO
+                3. ./PM1D TESTO
+                4. ./test_pot
+
+16. SECONDO PROGETTO SECONDO MODULO: SPH
+
+        Spiegazione in hydrodynamic.pdf + vedi ppt Borgani
+        

@@ -1,0 +1,102 @@
+INTEGRAZIONE DI EULERO: molto instabile, servono tanti Delta_t
+
+    Vogliamo mettere in orbita N pianeti attorno ad una stella di massa M a distanza r_i in unità astronomiche, supponendo ellitticità nulla.
+        Si scriva un codice che calcoli posizione, velocita' ed accelerazione a diversi tempi evolutivi per il Sistema Solare Interno 
+
+    a=GMs/r1^2
+    Vogliamo la velocità orbitale del pianeta; la scomponiamo in componenti x e y:
+        v=v_0 + a*Delta_t
+        p=r+ v*Delta_t
+    L'integrazione per la prima versione dell'esercizio saraì semplicemente Eulero:
+        x =x_0+ v_x Delta_t                 y =y_0+ v_y Delta_t   
+        v_x = vx_0 + a_x Delta_t            v_y = vy_0 + a_y Delta_t
+    Condizioni iniziali:
+        stella sta in (0,0)
+        y1=0, x1=-r1, quindi la velocità iniziale sarà tutta lungo y
+        v=sqrt((G*Ms)/r_i)
+
+    INPUT:
+        Quantità da passare da terminale: Ms, Np, r1....rn, Delta_t
+
+    OUTPUT:
+        E' richiesta una strutturazione adeguata (files, Makefile, funzioni omologhe in ogni file, variabili globali, codice ben strutturato, allocazione dinamica della memoria, etc)
+        -per ciascun pianeta un file binario (usando fwrite) contenente t, x, y, v_x, v_y, a_x, a_y per ogni Delta_t      
+                                                                        ---- t tempo dall'inizio della simulazione in anni, x,y in AU, vx, vy, ax, ay in MKS.
+        -file orbitbin2txt: convertitore binario-ascii che traduce i files binari in files di testo:
+            prende come argomento il numero di intervalli da plottare (N*Delta_t)
+                                                     -------- nel fine di testo non tutti i Delta_t,in modo da ottenere un grafico ragionevole delle orbite.
+    
+    PLOT:
+        Si produca un grafico che tracci le posizioni dei pianeti per un'orbita del pianeta piu' esterno.
+        L'orbita del pianeta piu' esterno deve essere stabile per almeno una intera rivoluzione. 
+        Plot delle traiettorie dei pianeti:
+            gnuplot
+            plot "myP.txt" u 1:2 w d
+
+    ATTENZIONE ALLE UNITA DI MISURA: 
+        stabilire bene le unità di misura  (unità astronomiche): 
+            - calcoli :[kg/M_sun], [(m/s)/v_earth], [(m/s^2)/a_earth]
+            - risultati: mks                                              ----- attenzione a G che quindi cambia
+        il codice dovrebbe lavorare in unita' interne, ovvero MKS riscalato (normalizzato) a valori appropriati:
+            UdL = metri/AU                                                ------tali valori sono riportati nel file params.txt (scritto in ascii, non posizionale, e unico per il sistema)
+            UdM = kg/MassaSolare
+            UdT = s/86400
+        
+    tip:
+        struct GeneralData {
+            double Mnorm, Lnorm, Tnorm;
+            int Np:
+            double r1, r2, ..., rN;
+        } all;
+
+    INFINE: generalizzare il problema sopra per il sistema TRAPPIST-1 (i 5 pianeti piu' interni)
+
+SOLE:
+    PER COMPILARE:
+        1. make                                 
+        2. ./orbit 1.0 4 0.001 0.39 0.72 1.0 1.52
+        3. ./orbitbin2txt planet_0.bin 100 planet_0.txt
+        ...
+        4. make clean
+
+    PLOT: gnuplot
+        gnuplot> set terminal pngcairo size 900,900
+
+        Terminal type is now 'pngcairo'
+        Options are ' background "#ffffff" enhanced fontscale 1.0 size 900, 900 '
+        gnuplot> set output "orbite.png"
+        gnuplot> set xlabel "x [AU]"
+        gnuplot> set ylabel "y [AU]"
+        gnuplot> set title "Orbite Sistema Solare Interno"
+        gnuplot> set size ratio -1
+        gnuplot> set object 1 circle at 0,0 size 0.03 fc rgb "yellow"
+        gnuplot> plot "planet_0.txt" u 2:3 w l title "Mercurio",\
+        >     "planet_1.txt" u 2:3 w l title "Venere",\
+        >     "planet_2.txt" u 2:3 w l title "Terra",\
+        >     "planet_3.txt" u 2:3 w l title "Marte"
+
+TRAPPIST-1:
+    PER COMPILARE:
+        1. make                                 
+        2. ./orbit 0.089 5 0.00005 0.0115 0.0158 0.0223 0.0293 0.0385
+        3. ./orbitbin2txt planet_0.bin 50 planet_0.txt
+        ...
+        4. make clean 
+
+    PLOT:
+        gnuplot> set terminal pngcairo size 900,900
+
+        Terminal type is now 'pngcairo'
+        Options are ' background "#ffffff" enhanced fontscale 1.0 size 900, 900 '
+        gnuplot> set output "orbite2.png"
+        gnuplot> set xlabel "x [AU]"
+        gnuplot> set ylabel "y [AU]"
+        gnuplot> set title "Orbite Sistema Trappist-1 Interno"
+        gnuplot> set size ratio -1
+        gnuplot> set object 1 circle at 0,0 size 0.002 fc rgb "yellow"
+        gnuplot> plot "planet_0.txt" u 2:3 w l title "b",\
+        >     "planet_1.txt" u 2:3 w l title "c",\
+        >     "planet_2.txt" u 2:3 w l title "d",\
+        >     "planet_3.txt" u 2:3 w l title "e",\
+        >     "planet_4.txt" u 2:3 w l title "f"
+        gnuplot> exit
