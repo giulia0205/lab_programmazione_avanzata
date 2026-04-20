@@ -3,3 +3,4 @@ hello_git/
 __pycache__/
 *.o
 build/
+*.x
