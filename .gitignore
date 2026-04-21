@@ -8,3 +8,7 @@ recap.txt
 *.out
 star-formation/
 *.dat
+
+diffusione/*.png
+diffusione/*.dat
+diffusione/plot_diffusione.py

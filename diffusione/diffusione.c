@@ -8,8 +8,10 @@
 int main(int argc, char *argv[]) {
     double dx = 1.0 / NX;   /*NX-1*/
     double K= atof(argv[1]);                /*K viene letta da terminale*/
-    double dt = 0.5 * pow(dx,2)/ K;         /*condizione di stabilità per Eulero-------- lui ha dissato a 0,0001*/
-    int nsteps = (int)1.0/ dt;
+    //double dt = 0.5 * pow(dx,2)/ K;         /*condizione di stabilità per Eulero-------- lui ha dissato a 0,0001*/
+    double dt = 0.4 * dx * dx / K;
+    double tmax = 1.0;
+    int nsteps = (int)(tmax / dt);
 
     /*creazione vettore u con le condizioni iniziali richieste*/
     double u[NX];
