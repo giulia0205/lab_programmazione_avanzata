@@ -1,15 +1,3 @@
-/* PER PLOTTARE:
-gnuplot> set terminal pngcairo size 800,600
-
-Terminal type is now 'pngcairo'
-Options are ' background "#ffffff" enhanced fontscale 1.0 size 800, 600 '
-gnuplot> set output "sfere7.png"
-gnuplot> set xrange [-6:6]
-gnuplot> set yrange [-6:6]
-gnuplot> plot "sfere00002_3.00000.txt" using 1:2 with points pt 7
-gnuplot> set output
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -37,10 +25,6 @@ void generatore_punti_file(int index, int count, float radius) {
     snprintf(filename, sizeof(filename), "circonferenze%05d_%.5f.txt", index, radius);       /*Scrive una stringa formattata dentro filename*/
 
     FILE *f = fopen(filename, "w");      /*Apre il file appena nominato per scrittura ("w"); f è un puntatore a FILE*/
-    /*if (!f) {
-        perror("Errore apertura file");
-        exit(1);
-    }*/
 
     for (int i = 0; i < count; i++) {
         point p = random_point_in_circle(radius);
@@ -51,10 +35,10 @@ void generatore_punti_file(int index, int count, float radius) {
 }
 
 int main(int argc, char *argv[]) {
-    /*if (argc != 5) {                il programma si aspetta 5 argomenti totali, se non sono 5 argomenti, entra nell’if e restituisce un messaggio di errore.
+    if (argc != 5) {                //il programma si aspetta 5 argomenti totali, se non sono 5 argomenti, entra nell’if e restituisce un messaggio di errore.
         fprintf(stderr, "Uso: %s N M r1 r2\n", argv[0]);
         return 1;
-    }*/
+    }
 
     /*Lettura degli argomenti da linea di comando*/
     int N = atoi(argv[1]);
@@ -62,7 +46,7 @@ int main(int argc, char *argv[]) {
     float r1 = atof(argv[3]);
     float r2 = atof(argv[4]);
 
-     /*Inizializza seme per numeri casuali: così ogni volta si generano numeri casuali differenti*/
+    /*Inizializza seme per numeri casuali: così ogni volta si generano numeri casuali differenti*/
     srand(time(NULL));
 
     /*Vengono generati i due file*/
