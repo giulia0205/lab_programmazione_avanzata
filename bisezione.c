@@ -62,30 +62,3 @@ int main(){
 
 
 
-
-/* Metodo di Newton-Raphson:
-
-Definizione della funzione:
-double y (double x) {
-    return pow(x,x)-exp(-x)-1; 
-}
-
-Definizone della derivata della funzione per x positive:
-double d (double x) {
-    return pow(x,x)*(log(x)+1)+exp(-x)
-}
-
-int main(){
-    double z=0.5
-    double p=0.01
-    for (int i=0)
-        double k = z - y(z)/d(z)
-        if (k-z < p){
-            break;
-        } else {
-            z=k;
-        }
-return z;
-}*/
-
-
