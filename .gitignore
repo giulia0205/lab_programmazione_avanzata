@@ -12,3 +12,4 @@ star-formation/
 diffusione/*.png
 diffusione/*.dat
 diffusione/plot_diffusione.py
+diffusione/diffusione
