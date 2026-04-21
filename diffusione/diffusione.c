@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     double K = atof(argv[1]);                /*K viene letta da terminale*/
 
     double dx = 1.0 / NX;   
-    //double dt = 0.4 * dx * dx / K;           /*condizione di stabilità per Eulero-------- lui ha fissato a 0,0001*/
+    //double dt = 0.4 * dx * dx / K;           /*condizione di stabilità per Eulero*/
     double dt = 0.0001;
     double tmax = 1.0;
     int nsteps = (int)(tmax / dt);
