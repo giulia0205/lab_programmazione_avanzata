@@ -7,3 +7,4 @@ build/
 recap.txt
 *.out
 star-formation/
+*.dat
