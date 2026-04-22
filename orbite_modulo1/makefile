@@ -1,24 +1,25 @@
-CC = gcc												#compilatore che viene utilizzato
-CFLAGS = -O2 -Wall										#flag del compilatore: -O2 ottimizzazione del codice, -Wall attiva quasi tutti i warning
+CC = gcc                                                # compilatore che viene utilizzato
+CFLAGS = -O2 -Wall                                      # flag del compilatore: -O2 ottimizzazione del codice, -Wall attiva quasi tutti i warning
 
-SRC = src/main.c src/physics.c src/io.c src/utils.c		#elenco dei file sorgente
-OBJ = $(SRC:.c=.o)										#creazione automatica dei file oggetto .o
+SRC = src/main.c src/physics.c src/io.c 		        # elenco dei file sorgente per orbit
+OBJ = $(SRC:.c=.o)                                      # creazione automatica dei file oggetto .o
 
-CONVERTER = src/orbitbin2txt.c							#definizione del file sorgente del convertitore binario-testo
+CONVERTER_SRC = src/orbitbin2txt.c src/io.c             # sorgenti necessari per il convertitore
+CONVERTER_OBJ = $(CONVERTER_SRC:.c=.o)                  # file oggetto del convertitore
 
-all: orbit orbitbin2txt									#target principale: quando scrivo nel terminare "make all" vegnono generati orbit e orbitbin2txt
+TXT_OUT = planet_*.txt                                  # file di testo di output
+BIN_OUT = planet_*.bin                                  # file binari di output
 
+all: orbit orbitbin2txt                                 # target principale
 
-orbit: $(OBJ)											#come viene generato orbit
+orbit: $(OBJ)                                           # come viene generato orbit
 	$(CC) $(CFLAGS) -o orbit $(OBJ) -lm
 
-orbitbin2txt: $(CONVERTER)								#come viene generato orbitbin2txt
-	$(CC) $(CFLAGS) -o orbitbin2txt $(CONVERTER)
+orbitbin2txt: $(CONVERTER_OBJ)                          # come viene generato orbitbin2txt
+	$(CC) $(CFLAGS) -o orbitbin2txt $(CONVERTER_OBJ) -lm
 
-%.o: %.c												#regola pattern per creare i file oggetto: $< primo file di dipendenza, $@ nome del target
+%.o: %.c                                                # regola pattern per creare i file oggetto
 	$(CC) $(CFLAGS) -c $< -o $@
 
-clean:													#pulisce la directory: scrivendo sul terminale "make clean" vengono cancellati src/*.o, orbit, orbitbin2txt e si può ricompilare da zero
-	rm -f src/*.o orbit orbitbin2txt
-
-
+clean:                                                  # pulizia directory
+	rm -f src/*.o orbit orbitbin2txt $(TXT_OUT) $(BIN_OUT)

@@ -1,4 +1,3 @@
-#include "utils.h"
 #include "physics.h"
 #include "io.h"
 #include <stdio.h>
@@ -12,41 +11,36 @@ int stamp(char *arg, char *mode) {
 
 int main(int argc, char *argv[]) {
 
-    /*Lettura variabili da terminale*/
-    double M_s= atof(argv[1]);
-    int Np= atoi(argv[2]);
-    double delta_t=atof(argv[3]);           //perchè delta_t è blu?
+    /*Lettura dei parametri*/
+    GeneralData all = {0};
 
-    /*Funzione di lettura dei parametri*/
-    GeneralData all;
-    read_params(&all);
-
-    all.Ms = M_s;
-    all.Np = Np;
-    all.delta_t = delta_t;
-    /*Allocazione di memoria e lettura dei raggi*/
-    all.r = malloc(Np * sizeof(double));
-    if (!all.r) return 1;
-    for (int i = 0; i < Np; i++) {
-        all.r[i] = atof(argv[4 + i]);
+    if (stamp(argv[1], "SUN")) {
+        read_params("params_sun.txt", &all);
+    } 
+    else if (stamp(argv[1], "TRAPPIST1")) {
+        read_params("params_trappist1.txt", &all);
+    } 
+    else {
+        printf("Errore: scrivere SUN oppure TRAPPIST1\n");
+        return 1;
     }
 
-    PlanetState *planets = malloc(Np * sizeof(PlanetState));
+    PlanetState *planets = malloc(all.Np * sizeof(PlanetState));
     if (!planets) return 1;
 
     init_planets(&all, planets);
 
     /*APRIMAO I FILE*/
-    FILE **files = open_binary_files(Np);                             //!!!!!!!
+    FILE **files = open_binary_files(all.Np);                             
 
     /*INTEGRAZIONE DI EULERO*/
     //Calcolo del periodo a partire dal pianeta più distante
-    double r_max = all.r[Np-1];
-    double T = 2 * M_PI * sqrt(pow(r_max,3) / (all.G_scaled * M_s));
-    int nsteps = (int)(T / delta_t);            
-    for (int n = 0; n < nsteps; n++) {          // era nstep-1 ma chat dice di toglierlo
-        for (int i = 0; i < Np; i++) {
-            //qua si scrive il file binario
+    double r_max = all.r[all.Np-1];
+    double T = 2 * M_PI * sqrt(pow(r_max,3) / (all.G_scaled * all.Ms));
+    int nsteps = (int)(T / all.delta_t);            
+    for (int n = 0; n < nsteps; n++) {          
+        for (int i = 0; i < all.Np; i++) {
+            //Scrittura del file binario
             OutputRecord rec;
             rec.t = n * all.delta_t;
             rec.x = planets[i].x;
@@ -62,7 +56,7 @@ int main(int argc, char *argv[]) {
 
 
     /*CHIUDIAMO I FILE*/
-    close_binary_files(Np, files);
+    close_binary_files(all.Np, files);
 
     free(all.r);
     free(planets);

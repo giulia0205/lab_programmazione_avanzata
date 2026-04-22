@@ -14,6 +14,6 @@ typedef struct {
 } GeneralData;
 
 
-void read_params(GeneralData *gd);  //dichiarazione della funzione di lettura dei parametri
+void read_params(const char *filename, GeneralData *gd); //dichiarazione della funzione di lettura dei parametri
 
 #endif
