@@ -119,34 +119,20 @@ int main(int argc, char *argv[]) {
             step++;
         }
 
-        write_file("output_final_qsort", p + Ng_sx, all.Np);
+        write_file("output_final_qsort.txt", p + Ng_sx, all.Np);
         printf("Wall-clock time totale QSORT = %.10f s\n", total_force_time);
-         //Obiettivo: Verificare che i profili di densità e pressione nello shock-tube siano coerenti con la teoria.
     }
 
     /*METODO GRID*/
     else if (stamp(argv[1],"GRID")) {
 
         /*Calcolo di h_ref iniziale */
-        qsort(p + Ng_sx, all.Np, sizeof(Particella), cmp_posizione);
-        compute_h_qsort(p + Ng_sx, all.Np);
+        qsort(p, Ntot, sizeof(Particella), cmp_posizione);
+        compute_h_qsort(p, Ntot);
         double h_ref = compute_h_mean(p + Ng_sx, all.Np);
 
         /*Costruzione della griglia iniziale */
         Grid1D g0;
-        /*
-        g0.xmin = xmin;
-        g0.xmax = xmax;
-        g0.L    = xmax - xmin;
-        g0.delta = h_ref;
-        g0.ncell = (int)ceil(g0.L / g0.delta);
-        g0.head = calloc(g0.ncell, sizeof(Particella *));
-        if (g0.head == NULL) {
-            fprintf(stderr, "Errore: allocazione griglia iniziale fallita.\n");
-            free(p);
-            return 1;
-        }
-            */
         g0.xmin  = p[0].Pos - 1.0e-12;
         g0.xmax  = p[Ntot - 1].Pos + 1.0e-12;
         g0.L     = g0.xmax - g0.xmin;
@@ -165,7 +151,7 @@ int main(int argc, char *argv[]) {
         compute_pressure(p, Ntot);
         compute_acc_dU_grid(p, Ntot, &g0);
 
-        /* Salvataggio condizioni iniziali */
+        /*Salvataggio condizioni iniziali*/
         write_file("output_grid_00000.txt", p + Ng_sx, all.Np);
 
         h_ref = compute_h_mean(p + Ng_sx, all.Np);
@@ -179,8 +165,6 @@ int main(int argc, char *argv[]) {
             Grid1D g;
 
             /*Definizione delle celle di ampiezza pari a <h> del passo precedente */
-            //g.xmin = xmin;
-            //g.xmax = xmax;
             g.xmin  = p[0].Pos - 1.0e-12;
             g.xmax  = p[Ntot - 1].Pos + 1.0e-12;
             g.L = g.xmax - g.xmin;
@@ -219,6 +203,31 @@ int main(int argc, char *argv[]) {
                 }
             }
 
+            qsort(p, Ntot, sizeof(Particella), cmp_posizione);
+
+            /*Definizione delle celle di ampiezza pari a <h> del passo precedente */
+            g.xmin  = p[0].Pos - 1.0e-12;
+            g.xmax  = p[Ntot - 1].Pos + 1.0e-12;
+            g.L = g.xmax - g.xmin;
+            g.delta = h_ref;                            
+
+            /*Controllo sull'ampiezza della griglia*/
+            if (g.delta <= 0.0) {
+                fprintf(stderr, "Errore: delta_cell non valida.\n");
+                free(p);
+                return 1;
+            }
+
+            g.ncell = (int)ceil(g.L / g.delta);         
+
+            /*Allocazione memoria arrray di teste*/
+            g.head = malloc(g.ncell * sizeof(Particella *));
+            if (g.head == NULL) {
+                fprintf(stderr, "Errore: allocazione griglia fallita.\n");
+                free(p);
+                return 1;
+            }
+
             /*Costruzione griglia*/
             build_grid(&g, p, Ntot);
 
@@ -231,10 +240,7 @@ int main(int argc, char *argv[]) {
             leapfrog_half_kick(p + Ng_sx, all.Np, all.dt);
 
             /*Aggiorna della scala della griglia per il passo successivo*/
-            /*h_ref_next = compute_h_mean(p, N);
-            h_ref = h_ref_next;*/
             h_ref = compute_h_mean(p + Ng_sx, all.Np);
-
 
             /*Calcolo del wall-clock time*/
             clock_gettime(CLOCK_MONOTONIC, &toc);
@@ -253,7 +259,7 @@ int main(int argc, char *argv[]) {
             step++;
         }
 
-        write_file("output_final_grid", p + Ng_sx, all.Np);
+        write_file("output_final_grid.txt", p + Ng_sx, all.Np);
         printf("Wall-clock time totale GRID = %.10f s\n", total_force_time);
     }
 

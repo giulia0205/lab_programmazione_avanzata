@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
 #include "vicini_qsort.h"
 
 #define GAMMA 1.4
@@ -13,13 +12,18 @@
 #define EPS       1.0e-12
 
 /*CREAZIONE DELLA GRIGLIA*/
-
 int cell_index(double x, const Grid1D *g) {
     int k = (int)floor((x - g->xmin) / g->delta);
 
+    /*Protezione numerica nel caso x cada esattamente su xmax*/
+    if (k == g->ncell) {
+        k = g->ncell - 1;
+    }
+
     /*Controllo sul fatto che l'indice trovato stia nel range di indici della griglia*/
     if (k < 0 || k >= g->ncell) {
-        fprintf(stderr, "ERRORE: particella fuori griglia: x=%g xmin=%g xmax=%g delta=%g ncell=%d k=%d\n");
+        fprintf(stderr, "ERRORE: particella fuori griglia: x=%g xmin=%g xmax=%g delta=%g ncell=%d k=%d\n",
+                x, g->xmin, g->xmax, g->delta, g->ncell, k);
         exit(1);
     }
 
@@ -27,7 +31,7 @@ int cell_index(double x, const Grid1D *g) {
 }
 
 void build_grid(Grid1D *g, Particella *p, int N) {
-    /*Azzaramento dell'intera griglia*/
+    /*Azzeramento dell'intera griglia*/
     for (int k = 0; k < g->ncell; k++) {
         g->head[k] = NULL;
     }
@@ -77,49 +81,46 @@ void compute_h_grid(Particella *p, int N, const Grid1D *g) {
 
                     double dx = pj->Pos - p[i].Pos;
 
-                    /* Controllo anti-wrap spurio */
-                    if (fabs(dx) > 0.5 * g->L) continue;
-
                     if (dx < 0.0 && nleft < 256) {
                         left_dist[nleft++] = -dx;
-                    } else if (dx > 0.0 && nright < 256) {
+                    } 
+                    else if (dx > 0.0 && nright < 256) {
                         right_dist[nright++] = dx;
                     }
                 }
 
-            } else {
-                int k_left  = (k0 - shell + g->ncell) % g->ncell;
-                int k_right = (k0 + shell) % g->ncell;
+            } 
+            else {
+                int k_left  = k0 - shell;
+                int k_right = k0 + shell;
 
-                /* Cella a sinistra */
-                for (Particella *pj = g->head[k_left]; pj != NULL; pj = pj->next) {
-                    if (pj == &p[i]) continue;
+                /*Cella a sinistra*/
+                if (k_left >= 0) {
+                    for (Particella *pj = g->head[k_left]; pj != NULL; pj = pj->next) {
+                        if (pj == &p[i]) continue;
 
-                    double dx = pj->Pos - p[i].Pos;
+                        double dx = pj->Pos - p[i].Pos;
 
-                    /* Controllo anti-wrap spurio */
-                    if (fabs(dx) > 0.5 * g->L) continue;
-
-                    if (dx < 0.0 && nleft < 256) {
-                        left_dist[nleft++] = -dx;
-                    } else if (dx > 0.0 && nright < 256) {
-                        right_dist[nright++] = dx;
+                        if (dx < 0.0 && nleft < 256) {
+                            left_dist[nleft++] = -dx;
+                        } 
+                        else if (dx > 0.0 && nright < 256) {
+                            right_dist[nright++] = dx;
+                        }
                     }
                 }
 
-                /* Cella a destra: attenzione a non ricontarla se coincide con la sinistra */
-                if (k_right != k_left) {
+                /*Cella a destra*/
+                if (k_right < g->ncell) {
                     for (Particella *pj = g->head[k_right]; pj != NULL; pj = pj->next) {
                         if (pj == &p[i]) continue;
 
                         double dx = pj->Pos - p[i].Pos;
 
-                        /* Controllo anti-wrap spurio */
-                        if (fabs(dx) > 0.5 * g->L) continue;
-
                         if (dx < 0.0 && nleft < 256) {
                             left_dist[nleft++] = -dx;
-                        } else if (dx > 0.0 && nright < 256) {
+                        } 
+                        else if (dx > 0.0 && nright < 256) {
                             right_dist[nright++] = dx;
                         }
                     }
@@ -137,17 +138,21 @@ void compute_h_grid(Particella *p, int N, const Grid1D *g) {
 
         if (nleft >= HALF_NGB) {
             d_left = left_dist[HALF_NGB - 1];
-        } else if (nleft > 0) {
+        } 
+        else if (nleft > 0) {
             d_left = left_dist[nleft - 1];
-        } else {
+        } 
+        else {
             d_left = EPS;
         }
 
         if (nright >= HALF_NGB) {
             d_right = right_dist[HALF_NGB - 1];
-        } else if (nright > 0) {
+        } 
+        else if (nright > 0) {
             d_right = right_dist[nright - 1];
-        } else {
+        } 
+        else {
             d_right = EPS;
         }
 
@@ -162,18 +167,27 @@ void compute_h_grid(Particella *p, int N, const Grid1D *g) {
 /*Calcolo della densità*/
 void compute_density_grid(Particella *p, int N, const Grid1D *g) {             
     for (int i = 0; i < N; i++) {
+
+        /*Le ghost particles non vengono aggiornate: mantengono i valori iniziali assegnati come condizioni al contorno*/
+        if (p[i].ghost) continue;
+
         double rho = 0.0;
         int k0 = cell_index(p[i].Pos, g);
 
-        for (int dk = -1; dk <= 1; dk++) {
-            int kc = (k0 + dk + g->ncell) % g->ncell;
+        /*Numero di celle da esplorare in base al supporto del kernel*/
+        int nshell = (int)ceil((2.0 * p[i].h) / g->delta);
+        if (nshell < 0) nshell = 0;
 
+        int kmin = k0 - nshell;
+        int kmax = k0 + nshell;
+
+        if (kmin < 0) kmin = 0;
+        if (kmax >= g->ncell) kmax = g->ncell - 1;
+
+        for (int kc = kmin; kc <= kmax; kc++) {
             for (Particella *pj = g->head[kc]; pj != NULL; pj = pj->next) {
                 double dx = p[i].Pos - pj->Pos;
                 double r  = fabs(dx);
-
-                /*Controllo anti-wrap spurio*/
-                if (r > 0.5 * g->L) continue;
 
                 if (r <= 2.0 * p[i].h) {
                     rho += pj->Mass * kernel_cubic_1d(r, p[i].h);
@@ -188,25 +202,38 @@ void compute_density_grid(Particella *p, int N, const Grid1D *g) {
 /*Calcolo acc e dU*/
 void compute_acc_dU_grid(Particella *p, int N, const Grid1D *g) {          
     for (int i = 0; i < N; i++) {
+
+        /*Le ghost particles non evolvono: non aggiorniamo né accelerazione né energia interna*/
+        if (p[i].ghost) {
+            p[i].Acc = 0.0;
+            p[i].dU  = 0.0;
+            continue;
+        }
+
         double acc = 0.0;
         double du  = 0.0;
 
         int k0 = cell_index(p[i].Pos, g);
 
-        for (int dk = -1; dk <= 1; dk++) {
-            int kc = (k0 + dk + g->ncell) % g->ncell;
+        /*Numero di celle da esplorare in base al supporto del kernel*/
+        int nshell = (int)ceil((2.0 * p[i].h) / g->delta) + 1;   //+1 di margine
+        if (nshell < 0) nshell = 0;
 
+        int kmin = k0 - nshell;
+        int kmax = k0 + nshell;
+
+        if (kmin < 0) kmin = 0;
+        if (kmax >= g->ncell) kmax = g->ncell - 1;
+
+        for (int kc = kmin; kc <= kmax; kc++) {
             for (Particella *pj = g->head[kc]; pj != NULL; pj = pj->next) {
                 if (pj == &p[i]) continue;
 
                 double dx = p[i].Pos - pj->Pos;
                 double r  = fabs(dx);
 
-                /*Controllo anti-wrap spurio*/
-                if (r > 0.5 * g->L) continue;
-
                 double hij = hij_mean(p[i].h, pj->h);               // si è usata h media
-                /*Controllo sul suppporto del kernel*/
+                /*Controllo sul supporto del kernel*/
                 if (r > 2.0 * hij) continue;
 
                 double gradW = grad_kernel_cubic_1d(p[i].Pos, pj->Pos, hij);

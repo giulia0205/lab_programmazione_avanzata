@@ -18,8 +18,6 @@ typedef struct Particella {
 void init_particles_shock_tube(Particella *p, int N, int Ng_sx, int Ng_dx, double xmin, double xmax);
 
 double compute_h_mean(Particella *p, int N);
-double rij(double xi, double xj);
-double dxij(double xi, double xj);
 double kernel_cubic_1d(double r, double h);
 double grad_kernel_cubic_1d(double xi, double xj, double h);
 double hij_mean(double hi, double hj);

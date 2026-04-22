@@ -14,7 +14,6 @@ typedef struct {
 
 
 int cell_index(double x, const Grid1D *g);
-void clear_grid(Grid1D *g);
 void build_grid(Grid1D *g, Particella *p, int N);
 
 void compute_h_grid(Particella *p, int N, const Grid1D *g);

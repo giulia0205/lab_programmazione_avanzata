@@ -84,8 +84,15 @@ void compute_density_qsort(Particella *p, int N) {
         double rho = 0.0;
 
         /*Range delle particelle adiacenti*/
-        int jmin = imax(0, i - HALF_NGB);
-        int jmax = imin(N - 1, i + HALF_NGB);
+        int jmin = i;
+        while (jmin > 0 && (p[i].Pos - p[jmin - 1].Pos) <= 2.0 * p[i].h) {
+            jmin--;
+        }
+
+        int jmax = i;
+        while (jmax < N - 1 && (p[jmax + 1].Pos - p[i].Pos) <= 2.0 * p[i].h) {
+            jmax++;
+        }
 
         /*Ciclo sulle particelle vicine*/
         for (int j = jmin; j <= jmax; j++) {
@@ -96,7 +103,7 @@ void compute_density_qsort(Particella *p, int N) {
             }
         }
 
-        p[i].Density = rho;
+        p[i].Density = fmax(rho, EPS);
     }
 }
 
@@ -114,8 +121,15 @@ void compute_acc_dU_qsort(Particella *p, int N) {
         double acc = 0.0;
         double dU  = 0.0;
 
-        int jmin = imax(0, i - HALF_NGB);
-        int jmax = imin(N - 1, i + HALF_NGB);
+        int jmin = i;
+        while (jmin > 0 && (p[i].Pos - p[jmin - 1].Pos) <= 2.0 * p[i].h) {
+            jmin--;
+        }
+
+        int jmax = i;
+        while (jmax < N - 1 && (p[jmax + 1].Pos - p[i].Pos) <= 2.0 * p[i].h) {
+            jmax++;
+        }
 
         for (int j = jmin; j <= jmax; j++) {
             if (j == i) continue;                                       //la particella non interagisce con sè stessa

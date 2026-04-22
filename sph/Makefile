@@ -27,7 +27,7 @@ vicini_qsort.o: vicini_qsort.c vicini_qsort.h physics.h
 vicini_grid.o: vicini_grid.c vicini_grid.h physics.h
 	$(CC) $(CFLAGS) -c vicini_grid.c
 
-OUTPUTS = output_qsort_*.txt output_grid_*.txt output_final_qsort.txt output_final_grid.txt
+OUTPUTS = output_qsort_*.txt output_grid_*.txt output_final_qsort.txt output_final_grid.txt output_final_grid.txt output_final_qsort.txt
 
 clean:
 	rm -f $(OBJ) $(TARGET) $(OUTPUTS)

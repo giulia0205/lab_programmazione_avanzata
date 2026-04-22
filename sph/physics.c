@@ -118,19 +118,6 @@ double compute_h_mean(Particella *p, int N) {
     return sum / (double)N;
 }
 
-/*Distanza assoluta r_ij = |x_i - x_j|*/
-/*
-double rij(double xi, double xj) {
-    return fabs(xi - xj);
-}
-
-/*Differenza con segno x_i - x_j (serve per il gradiente)*/
-/*
-double dxij(double xi, double xj) {
-    return xi - xj;
-}
-*/
-
 /*Kernel cubico B-spline 1D*/
 double kernel_cubic_1d(double r, double h) {
     /*Controllo sul valore di h*/
