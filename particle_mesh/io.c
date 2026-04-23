@@ -238,7 +238,7 @@ void write_snapshot(int step, Particle *part, int Np, double *rho, int Ng, doubl
         fclose(fp_part);
     }
 
-    /* Quantità su griglia */
+    /*Quantità su griglia*/
     double dx = L / Ng;
 
     FILE *fp_rho = fopen(fname_rho, "w");
@@ -256,7 +256,7 @@ void write_snapshot(int step, Particle *part, int Np, double *rho, int Ng, doubl
 
 /*File output finale: particelle, densità, forza, potenziale*/
 void write_final_data(Particle *part, int Np, double *rho, double *pot, double *force, int Ng, double L) {
-    /* Particelle finali */
+    /*Particelle finali*/
     FILE *fp_part = fopen("final_particles.txt", "w");
     if (fp_part == NULL) {
         printf("Errore apertura file final_particles.txt\n");
@@ -271,7 +271,7 @@ void write_final_data(Particle *part, int Np, double *rho, double *pot, double *
 
     double dx = L / Ng;
 
-    /* Densità finale */
+    /*Densità finale*/
     FILE *fp_rho = fopen("density_final.txt", "w");
     if (fp_rho == NULL) {
         printf("Errore apertura file density_final.txt\n");
@@ -283,7 +283,7 @@ void write_final_data(Particle *part, int Np, double *rho, double *pot, double *
         fclose(fp_rho);
     }
 
-    /* Potenziale finale */
+    /*Potenziale finale*/
     FILE *fp_pot = fopen("potential_final.txt", "w");
     if (fp_pot == NULL) {
         printf("Errore apertura file potential_final.txt\n");
@@ -295,7 +295,7 @@ void write_final_data(Particle *part, int Np, double *rho, double *pot, double *
         fclose(fp_pot);
     }
 
-    /* Forza finale */
+    /*Forza finale*/
     FILE *fp_force = fopen("force_final.txt", "w");
     if (fp_force == NULL) {
         printf("Errore apertura file force_final.txt\n");

@@ -172,12 +172,11 @@ void compute_potential_fft(double *rho, double *pot, int Ng, double L) {
     /*FFT diretta della densità*/
     fftw_execute(fft_fwd);
 
-    /*Modo k=0 */
+    /*Modo k=0*/
     kPot[0][0] = 0.0;
     kPot[0][1] = 0.0;
 
     /*Fattore fondamentale dei numeri d'onda*/
-    //double knorm = 2.0 * M_PI / L;
     double knorm = 2.0 * PI / L;
 
     /*Potenziale in Fourier*/
@@ -302,9 +301,7 @@ void force_to_particles(double *acc, double *force, Particle *part, int Np, int 
         double w_center = 0.75 - s * s;
         double w_right = 0.5 * (0.5 + s) * (0.5 + s);
 
-        acc[p] = w_left * force[i_left]
-               + w_center * force[i_center]
-               + w_right * force[i_right];
+        acc[p] = w_left * force[i_left] + w_center * force[i_center] + w_right * force[i_right];
     }
 }
 #endif
@@ -329,13 +326,6 @@ double compute_timestep(Particle *part, int Np, int Ng, double L) {
 }
 
 /*LEAPFROG*/
-/*Inizializzazione: porta le velocità dal tempo iniziale t^0 al mezzo passo t^(1/2)*/
-void leapfrog_start(Particle *part, double *acc, int Np, double dt) {
-    for (int p = 0; p < Np; p++) {
-        part[p].v += 0.5 * acc[p] * dt;
-    }
-}
-
 void leapfrog_drift(Particle *part, int Np, double dt, double L) {
     for (int p = 0; p < Np; p++) {
         part[p].x += part[p].v * dt;

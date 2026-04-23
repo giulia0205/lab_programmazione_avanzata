@@ -90,9 +90,6 @@ int main(int argc, char *argv[]) {
 
     write_snapshot(0, part, all.N_p, rho, all.N_g, all.L_Box);
 
-    /*LEAPFROG*/
-    /*Inizializzazione*/
-    //leapfrog_start(part, acc, all.N_p, all.delta_t);
     /*Loop temporale*/
     double t = 0.0;
     int step = 1;
@@ -136,7 +133,6 @@ int main(int argc, char *argv[]) {
     /*SCRITTURA OUTPUT FINALI*/
     write_final_data(part, all.N_p, rho, pot, force, all.N_g, all.L_Box);
     
-
     free(acc);
     free(force);
     free(pot);

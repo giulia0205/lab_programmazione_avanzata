@@ -24,7 +24,6 @@ void force_to_particles(double *acc, double *force, Particle *part, int Np, int 
 
 /*Leapfrog*/
 double compute_timestep(Particle *part, int Np, int Ng, double L);
-void leapfrog_start(Particle *part, double *acc, int Np, double dt);
 void leapfrog_drift(Particle *part, int Np, double dt, double L);
 void leapfrog_kick(Particle *part, double *acc, int Np, double dt);
 
