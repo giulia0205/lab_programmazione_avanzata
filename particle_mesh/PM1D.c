@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 
     /*Lettura parametri*/
     read_params(&all);
-    double dt_init = all.t_final / all.N_tsteps_est;                //passo iniziale, usato poi come tetto massimo del timestep adattivo
+    double dt_init = all.t_final / all.N_tsteps_est;                //passo iniziale, usato poi come tetto massimo del timestep adattivo: 0.1
     all.delta_t = dt_init;
 
     /*Controllo sul passaggio della tipologia di file da leggere*/
@@ -92,13 +92,21 @@ int main(int argc, char *argv[]) {
 
     /*LEAPFROG*/
     /*Inizializzazione*/
-    leapfrog_start(part, acc, all.N_p, all.delta_t);
+    //leapfrog_start(part, acc, all.N_p, all.delta_t);
     /*Loop temporale*/
     double t = 0.0;
     int step = 1;
+    double dt = all.delta_t;
+
     while (t < all.t_final) {
+        if (t + dt > all.t_final) {
+            dt = all.t_final - t;
+        }
+
+        /*Kick*/
+        leapfrog_kick(part, acc, all.N_p, dt);
         /*Drift*/
-        leapfrog_drift(part, all.N_p, all.delta_t, all.L_Box);
+        leapfrog_drift(part, all.N_p, dt, all.L_Box);
 
         /*Calcolo delle nuove forze sulle nuove posizioni*/
         density(rho, part, all.N_p, all.N_g, all.L_Box);
@@ -106,24 +114,22 @@ int main(int argc, char *argv[]) {
         compute_force_grid(force, pot, all.N_g, all.L_Box);
         force_to_particles(acc, force, part, all.N_p, all.N_g, all.L_Box);
 
-        all.delta_t = compute_timestep(part, all.N_p, all.N_g, all.L_Box);
-        if (all.delta_t > dt_init) {
-            all.delta_t = dt_init;
-        }
-        if (t + all.delta_t > all.t_final) {
-            all.delta_t = all.t_final - t;
-        }
-
         /*Kick*/
-        leapfrog_kick(part, acc, all.N_p, all.delta_t);
+        leapfrog_kick(part, acc, all.N_p, dt);
 
-        t += all.delta_t;
+        t += dt;
 
         /*Salvataggio snapshot ogni 200 step*/
         if (step % 200 == 0) {
             write_snapshot(step, part, all.N_p, rho, all.N_g, all.L_Box);
         }
 
+        all.delta_t = compute_timestep(part, all.N_p, all.N_g, all.L_Box);
+        if (all.delta_t > dt_init) {
+            all.delta_t = dt_init;
+        }
+
+        dt = all.delta_t;
         step++;
     }
 

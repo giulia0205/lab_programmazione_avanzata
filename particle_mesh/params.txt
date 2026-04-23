@@ -1,9 +1,9 @@
 UnitVel 1e5 
 UnitMass 1.989e43 
 UnitLength 3.085678e21 
-t_final 3.5
+t_final 3.7
 N_points 250000
 N_grid 256
 N_tsteps_est 1000
-BoxLength 30.0
-A_deltaPar 0.1
+BoxLength 50.0
+A_deltaPar 0.3

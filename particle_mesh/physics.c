@@ -12,27 +12,16 @@ double uniform_rand() {
 }
 
 double pdf(double x, double L, double A) {
-    return 1.0 + A * sin(2.0 * PI * x / L);
+    return 1.0 - A * cos(2.0 * PI * x / L);
 }
-/*
+
 void generate_distribution(Particle *part, int N, double L, double A) {
-    int count = 0;
-    double pmax = 1.0 + fabs(A);
-
-    while (count < N) {
-        double x_try = L * uniform_rand();
-        double y_try = pmax * uniform_rand();
-
-        if (y_try < pdf(x_try, L, A)) {
-            part[count].x = x_try;
-            part[count].v = 0.0;
-            part[count].mass = 1.0;
-            count++;
-        }
+    /*Controllo che la pdf resti sempre non negativa*/
+    if (fabs(A) > 1.0) {
+        printf("Errore: A_deltaPar deve soddisfare |A| <= 1\n");
+        exit(1);
     }
-}
-    */
-void generate_distribution(Particle *part, int N, double L, double A) {
+
     int count = 0;
     double pmax = 1.0 + fabs(A);
 
@@ -188,7 +177,8 @@ void compute_potential_fft(double *rho, double *pot, int Ng, double L) {
     kPot[0][1] = 0.0;
 
     /*Fattore fondamentale dei numeri d'onda*/
-    double knorm = 2.0 * M_PI / L;
+    //double knorm = 2.0 * M_PI / L;
+    double knorm = 2.0 * PI / L;
 
     /*Potenziale in Fourier*/
     for (int i = 1; i < Ng/2 + 1; i++) {
@@ -358,6 +348,6 @@ void leapfrog_drift(Particle *part, int Np, double dt, double L) {
 
 void leapfrog_kick(Particle *part, double *acc, int Np, double dt) {
     for (int p = 0; p < Np; p++) {
-        part[p].v += acc[p] * dt;
+        part[p].v += acc[p] * dt * 0.5;
     }
 }

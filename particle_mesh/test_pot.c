@@ -23,7 +23,8 @@ int main() {
     }
 
     double dx = all.L_Box / all.N_g;
-    double k = 2.0 * M_PI / all.L_Box;
+    //double k = 2.0 * M_PI / all.L_Box;
+    double k = 2.0 * acos(-1.0) / all.L_Box;
 
     /* Costruzione di una densità sinusoidale di test:
        rho(x) = sin(2*pi*x/L)
