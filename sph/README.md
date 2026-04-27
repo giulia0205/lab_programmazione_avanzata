@@ -3,7 +3,7 @@ Si vuole realizzare una simulazione SPH (Smoothed Particle Hydrodynamics) 1D per
 Si è imposta una smoothing lenght adattiva variabile per ogni particella in funzione della densità locale; h viene calcolata dinamicamente affinchè il nucleo di interpolazione contenza un numero pari di vicini pari a 64 particelle. Il calcolo dei vicini viene implelentato secondo due modalità:
 1. Ricerca QuickSort (QSORT): le particelle vengono riordinate lungo x;
 2. Ricerca LinkedLists (GRID): invece di riordinare tutto l'array di particelle ad ogni passo, il dominio viene suddiviso in celle spaziali e a ciascuna di esse viene associata una lista linkata di particelle. \
-L'obiettivo è di paragonare l'efficienza nel tempo di esecuzione delle due modalità. \
+L'obiettivo è di paragonare l'efficienza nel tempo di esecuzione delle due modalità. 
 
 FILE COMPONENTI IL PROGETTO:
 1. Input-Output
@@ -19,7 +19,7 @@ Il progetto viene eseguito lanciando "make QSORT" o "make GRID"; vegnono prodott
 Lanciando "make clean" vengono eliminati tutti gli eseguibili e i file di output.
 
 FILE DI OUTPUT: \
-I file di testo relativi allo stato delle particelle ad ogni timestep vengono automaticamente eliminati con "make clean". \ 
+I file di testo relativi allo stato delle particelle ad ogni timestep vengono automaticamente eliminati con "make clean". 
 I seguenti plot sono stati prodotti tramite apposito script python: 
 1. Metodo Quicksort \
     I. Plot densità iniziale e finale (shock_tube_p.png); \
