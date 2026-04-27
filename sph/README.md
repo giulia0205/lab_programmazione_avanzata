@@ -1,6 +1,6 @@
 DESCRIZIONE DEL PROGETTO: \
 Si vuole realizzare una simulazione SPH (Smoothed Particle Hydrodynamics) 1D per il caso test dello shock-tube. \
-Si è imposta una smoothing lenght adattiva variabile per ogni particella in funzione della densità locale; h viene calcolata dinamicamente affinchè il nucleo di interpolazione contenza un numero pari di vicini pari a 64 particelle. Il calcolo dei vicini viene implelentato secondo due modalità:
+Si è imposta una smoothing length adattiva variabile per ogni particella in funzione della densità locale; h viene calcolata dinamicamente affinchè il nucleo di interpolazione contenza un numero pari di vicini pari a 64 particelle. Il calcolo dei vicini viene implelentato secondo due modalità:
 1. Ricerca QuickSort (QSORT): le particelle vengono riordinate lungo x;
 2. Ricerca LinkedLists (GRID): invece di riordinare tutto l'array di particelle ad ogni passo, il dominio viene suddiviso in celle spaziali e a ciascuna di esse viene associata una lista linkata di particelle. \
 L'obiettivo è di paragonare l'efficienza nel tempo di esecuzione delle due modalità. 
