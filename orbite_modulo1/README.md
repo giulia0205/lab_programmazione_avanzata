@@ -1,4 +1,4 @@
-DESCRIZIONE DEL PROGETTO:\\
+DESCRIZIONE DEL PROGETTO:\
 Si vuole studiare il comportamento di un sistema stellare formato da un numero N di pianeti per un tempo pari al periodo di rivoluzione del pianeta più esterno. Si salvano posizioni, velocità e accelerazioni ad ogni step di integrazione all'interno di un file binario per ciascun pianeta. Con uno script apposito i file binari vegnono tradotti in file di testo dai quali poi tramite Gnuplot si sono plottate le orbite del sistema in esame. In questo progetto si solo studiati i seguenti sistemi:
 1. Sole + pianeti interni del sistema solare (Mercurio, Venere, Terra, Marte);
 2. Trappist-1 + 5 pianeti più interni.
@@ -14,9 +14,9 @@ FILE COMPONENTI IL PROGETTO:
 ESECUZIONE DEL PROGETTO:
 1. make NOME_STELLA (SUN o TRAPPIST1)
 2. ./orbitbin2txt NOME_STELLA (SUN o TRAPPIST1) SKIP (rispettivamente 100 e 50)
-3. gnuplot\\
-    3.1 SUN\\
-        set terminal pngcairo size 900,900  \\
+3. gnuplot \
+    3.1 SUN \
+        set terminal pngcairo size 900,900  \
         set output "orbite.png"\\
         set xlabel "x [AU]"\\
         set ylabel "y [AU]"\\
