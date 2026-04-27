@@ -20,3 +20,7 @@
 15. Equazione di Diffusione (Wall Boundary Conditions): diffusione.c
 16. Equazione di Diffusione (Periodic Boundary Conditions): diffusione2.c
 
+
+# Progetti per l'esame:
+17. Orbite: orbite_modulo1
+18. SPH: sph
