@@ -17,32 +17,32 @@ ESECUZIONE DEL PROGETTO:
 3. gnuplot \
     3.1 SUN \
         set terminal pngcairo size 900,900  \
-        set output "orbite.png"\\
-        set xlabel "x [AU]"\\
-        set ylabel "y [AU]"\\
-        set title "Orbite Sistema Solare Interno"\\
-        set size ratio -1\\
-        set object 1 circle at 0,0 size 0.03 fc rgb "yellow"\\
-        plot "planet\_0.txt" u 2:3 w l title "Mercurio",\ \\
-             "planet\_1.txt" u 2:3 w l title "Venere",\ \\
-             "planet\_2.txt" u 2:3 w l title "Terra",\ \\
-             "planet\_3.txt" u 2:3 w l title "Marte"\\
-        exit\\
-    3.2 TRAPPIST-1\\
-        set terminal pngcairo size 900,900\\
-        set output "orbite.png"\\
-        set xlabel "x [AU]"\\
-        set ylabel "y [AU]"\\
-        set title "Orbite Sistema Trappist-1 Interno"\\
-        set size ratio -1\\
-        set object 1 circle at 0,0 size 0.03 fc rgb "yellow"\\
-        plot "planet\_0.txt" u 2:3 w l title "b",\ \\
-             "planet\_1.txt" u 2:3 w l title "c",\ \\
-             "planet\_2.txt" u 2:3 w l title "d",\ \\
-             "planet\_3.txt" u 2:3 w l title "e",\ \\
-             "planet\_4.txt" u 2:3 w l title "f"\\
-        exit\\
-4. make clean\\
+        set output "orbite.png" \
+        set xlabel "x [AU]" \
+        set ylabel "y [AU]" \
+        set title "Orbite Sistema Solare Interno" \
+        set size ratio -1 \
+        set object 1 circle at 0,0 size 0.03 fc rgb "yellow" \
+        plot "planet\_0.txt" u 2:3 w l title "Mercurio",\  \
+             "planet\_1.txt" u 2:3 w l title "Venere",\  \
+             "planet\_2.txt" u 2:3 w l title "Terra",\ \
+             "planet\_3.txt" u 2:3 w l title "Marte" \
+        exit \
+    3.2 TRAPPIST-1 \
+        set terminal pngcairo size 900,900 \
+        set output "orbite.png" \
+        set xlabel "x [AU]" \
+        set ylabel "y [AU]" \
+        set title "Orbite Sistema Trappist-1 Interno" \
+        set size ratio -1 \
+        set object 1 circle at 0,0 size 0.03 fc rgb "yellow" \
+        plot "planet\_0.txt" u 2:3 w l title "b",\ \
+             "planet\_1.txt" u 2:3 w l title "c",\ \
+             "planet\_2.txt" u 2:3 w l title "d",\ \
+             "planet\_3.txt" u 2:3 w l title "e",\ \
+             "planet\_4.txt" u 2:3 w l title "f" \
+        exit \
+4. make clean \
 
-FILE DI OUTPUT:\\
+FILE DI OUTPUT: \
 I file contenenti posizioni, velocità e accelerazioni dei pianeti vengono eliminati con "make clean". Rimangono i due file .png raffiguranti le orbite dei sistemi rispettivamente del Sole e di Trappist-1. 
