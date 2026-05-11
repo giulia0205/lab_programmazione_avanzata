@@ -109,6 +109,14 @@ void compute_density_qsort(Particella *p, int N) {
 
 /*Calcolo dell'accelerazione e della derivata dell'energia interna (vengono calcolare assieme in quanto usano la stessa somma sui vicini)*/
 void compute_acc_dU_qsort(Particella *p, int N) {
+    /*Ricerca di una smoothing length massima globale: serve solo per costruire un range preliminare abbastanza ampio da non perdere coppie che potrebbero interagire tramite hij*/
+    double hmax = 0.0;
+    for (int k = 0; k < N; k++) {
+        if (p[k].h > hmax) {
+            hmax = p[k].h;
+        }
+    }
+
     for (int i = 0; i < N; i++) {
 
         /*Le ghost particles non evolvono: non aggiorniamo né accelerazione né energia interna*/
@@ -121,13 +129,14 @@ void compute_acc_dU_qsort(Particella *p, int N) {
         double acc = 0.0;
         double dU  = 0.0;
 
+        /*Range preliminare delle particelle candidate: usiamo 2*hmax invece di 2*h_i per non escludere a priori particelle che potrebbero contribuire quando si usa h_ij*/
         int jmin = i;
-        while (jmin > 0 && (p[i].Pos - p[jmin - 1].Pos) <= 2.0 * p[i].h) {
+        while (jmin > 0 && (p[i].Pos - p[jmin - 1].Pos) <= 2.0 * hmax) {
             jmin--;
         }
 
         int jmax = i;
-        while (jmax < N - 1 && (p[jmax + 1].Pos - p[i].Pos) <= 2.0 * p[i].h) {
+        while (jmax < N - 1 && (p[jmax + 1].Pos - p[i].Pos) <= 2.0 * hmax) {
             jmax++;
         }
 
