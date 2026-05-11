@@ -1,9 +1,6 @@
 #include "physics.h"            
 #include <math.h>
 
-
-//ATTENZIONE: PERCHÈ A VOLTE *P E ALTRE * PLANETS?????? non importa è solo il puntatore
-
 /*Calcolo dell'accelerazione*/
 void compute_acceleration(const GeneralData *gd, PlanetState *p) {
     double r2 = p->x * p->x + p->y * p->y;

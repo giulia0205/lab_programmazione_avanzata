@@ -10,6 +10,11 @@ int stamp(char *arg, char *mode) {
 }
 
 int main(int argc, char *argv[]) {
+    /*Controllo sulla lettura da terminale*/
+    if (argc < 2) {
+        printf("Uso: %s SUN oppure TRAPPIST1 skip\n", argv[0]);
+        return 1;
+    }
 
     /*Lettura dei parametri*/
     GeneralData all = {0};
