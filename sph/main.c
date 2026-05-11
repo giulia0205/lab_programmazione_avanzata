@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     /*Funzione di lettura del parameter file*/
     GeneralData all;
     read_params(&all);
-    fprintf(stderr, "PARAMS: dt=%g t_end=%g Np=%d\n", all.dt, all.t_end, all.Np);
+    //fprintf(stderr, "PARAMS: dt=%g t_end=%g Np=%d\n", all.dt, all.t_end, all.Np);
 
     const double xmin = -0.5 * all.L_grid;           
     const double xmax =  0.5 * all.L_grid;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    /*Allocazione memoria particelle ( con aggiunta di particelle fantasma)*/
+    /*Allocazione memoria particelle (on aggiunta di particelle fantasma)*/
     int Ng_sx = 40;
     int Ng_dx = 40;
     int Ntot = Ng_sx + all.Np + Ng_dx;
@@ -71,11 +71,10 @@ int main(int argc, char *argv[]) {
 
             clock_gettime(CLOCK_MONOTONIC, &tic);
 
-            /*RICERCA DEI VICINI*/
-
             leapfrog_half_kick(p + Ng_sx, all.Np, all.dt);
             leapfrog_drift(p + Ng_sx, all.Np, all.dt);
 
+            /*Condizioni al contorno riflettenti*/
             for (int i = Ng_sx; i < Ng_sx + all.Np; i++) {
                 if (p[i].Pos < xmin) {
                     p[i].Pos = xmin + (xmin - p[i].Pos);
@@ -95,7 +94,6 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
 
-            /*SPH ADATTIVO*/
             compute_h_qsort(p, Ntot);
             compute_density_qsort(p, Ntot);
             compute_pressure(p, Ntot);
@@ -161,37 +159,13 @@ int main(int argc, char *argv[]) {
         int step = 1;
                 
         while(t < all.t_end) {    
-            /*RICERCA DEI VICINI*/              
-            Grid1D g;
-
-            /*Definizione delle celle di ampiezza pari a <h> del passo precedente */
-            g.xmin  = p[0].Pos - 1.0e-12;
-            g.xmax  = p[Ntot - 1].Pos + 1.0e-12;
-            g.L = g.xmax - g.xmin;
-            g.delta = h_ref;                            //h_ref ci serve ad aggiornare delta ad ogni passo temporale
-
-            /*Controllo sull'ampiezza della griglia*/
-            if (g.delta <= 0.0) {
-                fprintf(stderr, "Errore: delta_cell non valida.\n");
-                free(p);
-                return 1;
-            }
-
-            g.ncell = (int)ceil(g.L / g.delta);         //ceil arrotonda per eccesso
-
-            /*Allocazione memoria arrray di teste*/
-            g.head = malloc(g.ncell * sizeof(Particella *));
-            if (g.head == NULL) {
-                fprintf(stderr, "Errore: allocazione griglia fallita.\n");
-                free(p);
-                return 1;
-            }
 
             clock_gettime(CLOCK_MONOTONIC, &tic);
 
             leapfrog_half_kick(p + Ng_sx, all.Np, all.dt);
             leapfrog_drift(p + Ng_sx, all.Np, all.dt);
 
+            /*Condizioni al contorno riflettenti*/
             for (int i = Ng_sx; i < all.Np + Ng_sx; i++) {
                 if (p[i].Pos < xmin) {
                     p[i].Pos = xmin + (xmin - p[i].Pos);   // riflessione geometrica
@@ -205,7 +179,9 @@ int main(int argc, char *argv[]) {
 
             qsort(p, Ntot, sizeof(Particella), cmp_posizione);
 
-            /*Definizione delle celle di ampiezza pari a <h> del passo precedente */
+            Grid1D g;
+
+            /*Definizione delle celle di ampiezza pari a <h> del passo precedente*/
             g.xmin  = p[0].Pos - 1.0e-12;
             g.xmax  = p[Ntot - 1].Pos + 1.0e-12;
             g.L = g.xmax - g.xmin;
@@ -228,10 +204,9 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
 
-            /*Costruzione griglia*/
+            /*Costruzione griglia sulle nuove posizioni*/
             build_grid(&g, p, Ntot);
 
-            /*SPH ADATTIVO*/
             compute_h_grid(p, Ntot, &g);
             compute_density_grid(p, Ntot, &g);
             compute_pressure(p, Ntot);
